@@ -17,19 +17,28 @@ from scripts.macro import get_macro, format_macro
 from scripts.screener import run_screener, format_screener
 
 portfolio = json.loads(open("portfolio.json").read())
-macro = get_macro()
-candidates = run_screener(cdi_rate=macro["cdi"])
-
-print("## Macro")
-print(format_macro(macro))
-print()
-
-print("## Top Candidatos (Metodologia Logan)")
-print(format_screener(candidates))
-print()
-
 positions = portfolio.get("positions", [])
 budget = portfolio.get("monthly_budget", 1000)
+
+macro = None
+candidates = []
+
+try:
+    macro = get_macro()
+    print("## Macro")
+    print(format_macro(macro))
+except Exception as e:
+    print(f"## Macro\n⚠️ Indisponível: {e}")
+print()
+
+try:
+    cdi = macro["cdi"] if macro else 14.75  # fallback CDI estimado
+    candidates = run_screener(cdi_rate=cdi)
+    print("## Top Candidatos (Metodologia Logan)")
+    print(format_screener(candidates))
+except Exception as e:
+    print(f"## Top Candidatos\n⚠️ Indisponível: {e}")
+print()
 
 print("## Sua Carteira")
 if not positions:
