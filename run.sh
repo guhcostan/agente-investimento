@@ -57,6 +57,11 @@ try:
             "Defina BRAPI_TOKEN para o universo completo."
         )
         tickers = DEMO_TICKERS
+    elif provider == "brapi" and os.environ.get("BRAPI_TOKEN"):
+        provider_note = (
+            "ℹ️ Plano brapi free: cotação completa em ~47 ações; "
+            "fundamentos só em PETR4/VALE3/ITUB4/MGLU3."
+        )
 
     candidates = run_screener(cdi_rate=cdi, tickers=tickers, provider=provider)
     print("## Top Candidatos (Metodologia Logan)")

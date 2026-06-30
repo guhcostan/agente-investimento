@@ -47,13 +47,15 @@ def _score_from_data(
     cdi_rate: float,
     novo_mercado: set[str],
     market_cap: float = 0,
+    require_fundamentals: bool = True,
 ) -> dict | None:
     if (avg_vol or 0) * (price or 0) < 10_000_000:
         return None
 
     valid = [n for n in net_incomes if n is not None]
-    if len(valid) < 2 or sum(1 for n in valid[:4] if n <= 0) > 1:
-        return None
+    if require_fundamentals:
+        if len(valid) < 2 or sum(1 for n in valid[:4] if n <= 0) > 1:
+            return None
 
     score = 0
     reasons = []
@@ -124,10 +126,12 @@ def score_ticker_brapi(quote: dict, cdi_rate: float, novo_mercado: set[str]) -> 
 
     pe = quote.get("priceEarnings") or stats.get("trailingPE")
     ticker = (quote.get("symbol") or "").upper()
+    has_fundamentals = quote.get("_has_fundamentals", True)
 
     return _score_from_data(
         ticker, price, avg_vol, net_incomes, debt_ebitda, pe,
         cdi_rate, novo_mercado, quote.get("marketCap", 0),
+        require_fundamentals=has_fundamentals,
     )
 
 
