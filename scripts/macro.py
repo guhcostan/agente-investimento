@@ -1,10 +1,10 @@
 import requests
-import yfinance as yf
 
 BCB_SERIES = {
     "selic": 432,
     "cdi": 4389,
     "ipca_12m": 13522,
+    "usd_brl": 1,  # PTAX compra — evita yfinance (bloqueado em cloud)
 }
 
 
@@ -17,8 +17,6 @@ def get_macro() -> dict:
         valor = r.json()[0]["valor"].replace(",", ".")
         result[name] = float(valor)
 
-    usd_brl = yf.Ticker("USDBRL=X").fast_info["lastPrice"]
-    result["usd_brl"] = round(float(usd_brl), 2)
     return result
 
 
