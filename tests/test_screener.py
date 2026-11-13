@@ -69,6 +69,6 @@ def test_run_screener_returns_sorted():
     ]
     with patch("scripts.screener.score_ticker", side_effect=side_effects), \
          patch("scripts.screener.fetch_novo_mercado", return_value=set()):
-        top = run_screener(cdi_rate=14.75, tickers=["A", "B", "C"])
+        top = run_screener(cdi_rate=14.75, tickers=["A", "B", "C"], provider="yfinance")
     assert top[0]["ticker"] == "B"
     assert top[0]["score"] == 4
